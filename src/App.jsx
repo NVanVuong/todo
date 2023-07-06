@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import Header from "./components/Header";
+import Input from "./components/Input";
+import Layout from "./components/Layout";
+import List from "./components/List";
+import todoState from "./components/todo";
+import { v4 as uuidv4 } from "uuid";
+import Footer from "./components/Footer";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [todos, setTodos] = useState(todoState);
+  const [title, setTitle] = useState("");
+
+  const handleAdd = () => {
+    setTodos([
+      ...todos,
+      {
+        id: uuidv4(),
+        title: title,
+        completed: false,
+      },
+    ]);
+  };
+
+  const handleUpdate = (nextTodo) => {
+    setTodos(
+      todos.map((todo) => {
+        if (todo.id === nextTodo.id) return nextTodo;
+        else return todo;
+      })
+    );
+  };
+
+  const handleDelete = (todoId) => {
+    setTodos(todos.filter((todo) => todo.id !== todoId));
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Layout>
+        <div className="h-full flex justify-center items-center lg:w-2/3 xl:w-2/5 w-full px-7">
+          <div className="w-full mt-16">
+            <Header />
+            <Input title={title} setTitle={setTitle} handleAdd={handleAdd} />
+            <List
+              todos={todos}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+            />
+            <Footer />
+          </div>
+        </div>
+      </Layout>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
