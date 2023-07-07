@@ -1,51 +1,66 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
 
-const initialState = [
-  { id: uuidv4(), title: "Jog around the park 3x", status: "Pending" },
-  { id: uuidv4(), title: "10 minutes meditation", status: "In progress" },
-  { id: uuidv4(), title: "Read for 1 hour", status: "Pending" },
-  { id: uuidv4(), title: "Pick up groceries", status: "Done" },
-  { id: uuidv4(), title: "Complete Todo App", status: "Done" },
-  { id: uuidv4(), title: "Go for a run", status: "Pending" },
-  { id: uuidv4(), title: "Finish writing report", status: "In progress" },
-  { id: uuidv4(), title: "Prepare dinner", status: "Pending" },
-];
+const initialState = [];
+
+const apiUrl = "https://todo-twbz.onrender.com/api/todos";
 
 export const todosSlice = createSlice({
   name: "todos",
   initialState,
+  
   reducers: {
-    todosAdd: (state, action) => {
-      const { id, title, status } = action.payload;
-      state.push({ id, title, status });
-    },
-    todosUpdate: (state, action) => {
-      const { id, title, status } = action.payload;
-      const existingTodo = state.find((todo) => todo.id === id);
-      if (existingTodo) {
-        existingTodo.title = title;
-        existingTodo.status = status;
+    todosAdd: async (state, action) => {
+      const { title, status } = action.payload;
+      try {
+        const response = await axios.post(apiUrl, { title, status });
+        state.push(response.data);
+      } catch (error) {
+        console.error("Error adding todo:", error);
       }
     },
-    todosDelete: (state, action) => {
-      const id = action.payload;
-      const index = state.findIndex((t) => t.id === id);
-      state.splice(index, 1);
+    todosUpdate: async (state, action) => {
+      const { id, title, status } = action.payload;
+      try {
+        const response = await axios.patch(`${apiUrl}/${id}`, {
+          title,
+          status,
+        });
+        const updatedTodo = response.data;
+        const index = state.findIndex((todo) => todo.id === updatedTodo.id);
+        if (index !== -1) {
+          state[index] = updatedTodo;
+        }
+      } catch (error) {
+        console.error("Error updating todo:", error);
+      }
     },
-    todosAllDelete: (state, action) => {
-      const idsToDelete = action.payload;
-      idsToDelete.forEach((id) => {
+    todosDelete: async (state, action) => {
+      const id = action.payload;
+      try {
+        await axios.delete(`${apiUrl}/${id}`);
         const index = state.findIndex((todo) => todo.id === id);
         if (index !== -1) {
           state.splice(index, 1);
         }
-      });
+      } catch (error) {
+        console.error("Error deleting todo:", error);
+      }
     },
   },
 });
 
-export const { todosAdd, todosUpdate, todosDelete, todosAllDelete } =
-  todosSlice.actions;
+export const { todosAdd, todosUpdate, todosDelete } = todosSlice.actions;
+
+export const fetchTodos = () => async () => {
+  try {
+    const response = await axios.get(apiUrl);
+    console.log(response);
+    const todosData = response.data;
+    console.log(todosData);
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+  }
+};
 
 export default todosSlice.reducer;

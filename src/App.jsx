@@ -3,57 +3,83 @@ import Header from "./components/Header";
 import Input from "./components/Input";
 import Layout from "./components/Layout";
 import List from "./components/List";
-import todoState from "./components/todo";
 import { v4 as uuidv4 } from "uuid";
 import Footer from "./components/Footer";
 import Modal from "./components/Modal";
-import { useDispatch, useSelector } from "react-redux";
+import { useGetTodosQuery } from "./api";
 import {
-  todosAdd,
-  todosAllDelete,
-  todosDelete,
-  todosUpdate,
-} from "./todosSlice";
+  useAddTodoMutation,
+  useUpdateTodoMutation,
+  useDeleteTodoMutation,
+} from "./api";
 
 function App() {
-  const todos = useSelector((state) => state.todo);
-  const [todosCurrent, setTodosCurrent] = useState(todoState);
+  const { data: todos } = useGetTodosQuery();
+  const [todosCurrent, setTodosCurrent] = useState([]);
   const [todoEdit, setTodoEdit] = useState(null);
   const [viewCurrent, setViewCurrent] = useState("All");
   const [title, setTitle] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [idsSlected, setIdsSelected] = useState([]);
-  const dispatch = useDispatch();
+  const [idsSelected, setIdsSelected] = useState([]);
 
+  useEffect(() => {
+    if (todos) {
+      setTodosCurrent(todos);
+    }
+  }, [todos]);
+
+  // const handleAdd = () => {
+  //   if (title.trim() !== "") {
+  //     dispatch(
+  //       todosAdd({
+  //         id: uuidv4(),
+  //         title: title,
+  //         status: "Pending",
+  //       })
+  //     );
+  //   }
+  //   setTitle("");
+  // };
+
+  const addTodoMutation = useAddTodoMutation();
   const handleAdd = () => {
     if (title.trim() !== "") {
-      dispatch(
-        todosAdd({
-          id: uuidv4(),
-          title: title,
-          status: "Pending",
-        })
-      );
+      addTodoMutation.mutate({
+        id: uuidv4(),
+        title: title,
+        status: "Pending",
+      });
     }
     setTitle("");
   };
 
+  // const handleUpdate = (newTodo) => {
+  //   dispatch(
+  //     todosUpdate({
+  //       id: newTodo.id,
+  //       title: newTodo.title,
+  //       status: newTodo.status,
+  //     })
+  //   );
+  // };
+
+  const updateTodoMutation = useUpdateTodoMutation();
+
   const handleUpdate = (newTodo) => {
-    dispatch(
-      todosUpdate({
-        id: newTodo.id,
-        title: newTodo.title,
-        status: newTodo.status,
-      })
-    );
+    updateTodoMutation.mutate({
+      id: newTodo.id,
+      title: newTodo.title,
+      status: newTodo.status,
+    });
   };
 
+  // const handleDelete = (todoId) => {
+  //   dispatch(todosDelete(todoId));
+  // };
+
+  const deleteTodoMutation = useDeleteTodoMutation();
   const handleDelete = (todoId) => {
-    dispatch(todosDelete(todoId));
-  };
-
-  const handleAllDelete = () => {
-    dispatch(todosAllDelete(idsSlected));
+    deleteTodoMutation.mutate(todoId);
   };
 
   useEffect(() => {
@@ -86,14 +112,13 @@ function App() {
               handleDelete={handleDelete}
               setShowModal={setShowModal}
               setTodoEdit={setTodoEdit}
-              idsSlected={idsSlected}
+              idsSlected={idsSelected}
               setIdsSelected={setIdsSelected}
             />
             <Footer
               viewCurrent={viewCurrent}
               todosCurrent={todosCurrent}
               setViewCurrent={setViewCurrent}
-              handleAllDelete={handleAllDelete}
             />
             <Modal
               todo={todoEdit}

@@ -11,7 +11,7 @@ const List = ({
 }) => {
   return (
     <ul className="rounded-md">
-      {todosCurrent.map((todo) => (
+      {todosCurrent?.map((todo) => (
         <ListItem
           key={todo.id}
           todo={todo}
