@@ -1,15 +1,9 @@
 import { MdOutlinePlaylistAddCheck } from "react-icons/md";
 
 const Input = ({ title, setTitle, handleAdd }) => {
-  const onAdd = () => {
-    if (title.trim() !== "") {
-      handleAdd();
-      setTitle("");
-    }
-  };
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      onAdd();
+      handleAdd();
     }
   };
 
@@ -24,7 +18,7 @@ const Input = ({ title, setTitle, handleAdd }) => {
         placeholder="Create a new todo..."
       />
       <MdOutlinePlaylistAddCheck
-        onClick={onAdd}
+        onClick={handleAdd}
         className="absolute right-4 top-5 text-xl cursor-pointer hover:text-blue-600 hover:drop-shadow-md hover:scale-110 duration-200 transition"
       />
     </div>

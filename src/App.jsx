@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "./components/Header";
 import Input from "./components/Input";
 import Layout from "./components/Layout";
@@ -6,34 +6,72 @@ import List from "./components/List";
 import todoState from "./components/todo";
 import { v4 as uuidv4 } from "uuid";
 import Footer from "./components/Footer";
+import Modal from "./components/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  todosAdd,
+  todosAllDelete,
+  todosDelete,
+  todosUpdate,
+} from "./todosSlice";
 
 function App() {
-  const [todos, setTodos] = useState(todoState);
+  const todos = useSelector((state) => state.todo);
+  const [todosCurrent, setTodosCurrent] = useState(todoState);
+  const [todoEdit, setTodoEdit] = useState(null);
+  const [viewCurrent, setViewCurrent] = useState("All");
   const [title, setTitle] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [idsSlected, setIdsSelected] = useState([]);
+  const dispatch = useDispatch();
 
   const handleAdd = () => {
-    setTodos([
-      ...todos,
-      {
-        id: uuidv4(),
-        title: title,
-        completed: false,
-      },
-    ]);
+    if (title.trim() !== "") {
+      dispatch(
+        todosAdd({
+          id: uuidv4(),
+          title: title,
+          status: "Pending",
+        })
+      );
+    }
+    setTitle("");
   };
 
-  const handleUpdate = (nextTodo) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === nextTodo.id) return nextTodo;
-        else return todo;
+  const handleUpdate = (newTodo) => {
+    dispatch(
+      todosUpdate({
+        id: newTodo.id,
+        title: newTodo.title,
+        status: newTodo.status,
       })
     );
   };
 
   const handleDelete = (todoId) => {
-    setTodos(todos.filter((todo) => todo.id !== todoId));
+    dispatch(todosDelete(todoId));
   };
+
+  const handleAllDelete = () => {
+    dispatch(todosAllDelete(idsSlected));
+  };
+
+  useEffect(() => {
+    switch (viewCurrent) {
+      case "Pending":
+        setTodosCurrent(todos.filter((todo) => todo.status === "Pending"));
+        break;
+      case "In progress":
+        setTodosCurrent(todos.filter((todo) => todo.status === "In progress"));
+        break;
+      case "Done":
+        setTodosCurrent(todos.filter((todo) => todo.status === "Done"));
+        break;
+      default:
+        setTodosCurrent(todos);
+        break;
+    }
+  }, [viewCurrent, todos]);
 
   return (
     <>
@@ -43,11 +81,26 @@ function App() {
             <Header />
             <Input title={title} setTitle={setTitle} handleAdd={handleAdd} />
             <List
-              todos={todos}
-              handleUpdate={handleUpdate}
+              todosCurrent={todosCurrent}
+              setTodosCurrent={setTodosCurrent}
               handleDelete={handleDelete}
+              setShowModal={setShowModal}
+              setTodoEdit={setTodoEdit}
+              idsSlected={idsSlected}
+              setIdsSelected={setIdsSelected}
             />
-            <Footer />
+            <Footer
+              viewCurrent={viewCurrent}
+              todosCurrent={todosCurrent}
+              setViewCurrent={setViewCurrent}
+              handleAllDelete={handleAllDelete}
+            />
+            <Modal
+              todo={todoEdit}
+              handleUpdate={handleUpdate}
+              showModal={showModal}
+              setShowModal={setShowModal}
+            />
           </div>
         </div>
       </Layout>

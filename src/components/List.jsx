@@ -1,14 +1,26 @@
 import ListItem from "./ListItem";
 
-const List = ({ todos, handleUpdate, handleDelete }) => {
+const List = ({
+  todosCurrent,
+  handleUpdate,
+  handleDelete,
+  setShowModal,
+  setTodoEdit,
+  idsSlected,
+  setIdsSelected,
+}) => {
   return (
     <ul className="rounded-md">
-      {todos.map((todo) => (
+      {todosCurrent.map((todo) => (
         <ListItem
           key={todo.id}
           todo={todo}
           handleUpdate={handleUpdate}
           handleDelete={handleDelete}
+          setShowModal={setShowModal}
+          setTodoEdit={setTodoEdit}
+          idsSlected={idsSlected}
+          setIdsSelected={setIdsSelected}
         />
       ))}
     </ul>
