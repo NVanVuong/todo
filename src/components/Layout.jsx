@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
         bg-center-top
         bg-fixed
         bg-[length:100vw_40%]
-        bg-slate-200 
+        bg-gray-300 
         w-full"
     >
       <main className="flex flex-col items-center h-full">{children}</main>
