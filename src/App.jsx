@@ -13,6 +13,7 @@ import {
   useDeleteTodoMutation,
 } from "./service/api";
 import { Loading } from "./components/Loading";
+import { inProgress, pending, done } from "./constants";
 
 function App() {
   const [todosCurrent, setTodosCurrent] = useState([]);
@@ -21,12 +22,6 @@ function App() {
   const [title, setTitle] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [idsSelected, setIdsSelected] = useState([]);
-  // const [addTodoMutation, { isLoading }] = useAddTodoMutation();
-  // const [updateTodoMutation, { isLoading }] = useUpdateTodoMutation();
-  // const [deleteTodoMutation, , { isLoading }] = useDeleteTodoMutation();
-
-  // const { data: todos, isLoading, refetch } = useGetTodosQuery();
-
   const [addTodoMutation, { isLoading: isAddTodoLoading }] =
     useAddTodoMutation();
   const [updateTodoMutation, { isLoading: isUpdateTodoLoading }] =
@@ -57,7 +52,7 @@ function App() {
       await addTodoMutation({
         id: uuidv4(),
         title: title,
-        status: "Pending",
+        status: pending,
       });
     }
     setTitle("");
@@ -87,14 +82,14 @@ function App() {
 
   useEffect(() => {
     switch (viewCurrent) {
-      case "Pending":
-        setTodosCurrent(todos.filter((todo) => todo.status === "Pending"));
+      case pending:
+        setTodosCurrent(todos.filter((todo) => todo.status === pending));
         break;
-      case "In progress":
-        setTodosCurrent(todos.filter((todo) => todo.status === "In progress"));
+      case inProgress:
+        setTodosCurrent(todos.filter((todo) => todo.status === inProgress));
         break;
-      case "Done":
-        setTodosCurrent(todos.filter((todo) => todo.status === "Done"));
+      case done:
+        setTodosCurrent(todos.filter((todo) => todo.status === done));
         break;
       default:
         setTodosCurrent(todos);
