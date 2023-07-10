@@ -2,11 +2,12 @@ const Footer = ({
   viewCurrent,
   todosCurrent,
   setViewCurrent,
-  handleAllDelete,
+  idsSelected,
+  handleClearSelection,
 }) => {
   return (
     <div className="flex justify-between rounded-b mb-20 tracking-wider text-sm font-semibold text-[#484b6a] w-full border-b border-gray-200 p-4 bg-white">
-      <span className="w-20">Total: {todosCurrent.length}</span>
+      <span className="w-20">Total: {todosCurrent?.length}</span>
       <ul className="flex gap-4 ">
         <li
           onClick={() => setViewCurrent("All")}
@@ -41,7 +42,10 @@ const Footer = ({
           Done
         </li>
       </ul>
-      <span onClick={handleAllDelete} className="cursor-pointer">
+      <span
+        onClick={() => handleClearSelection(idsSelected)}
+        className="cursor-pointer"
+      >
         Clear selection
       </span>
     </div>

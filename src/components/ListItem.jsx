@@ -7,7 +7,7 @@ const ListItem = ({
   handleDelete,
   setShowModal,
   setTodoEdit,
-  idsSlected,
+  idsSelected,
   setIdsSelected,
 }) => {
   const handleEditClick = (todo) => {
@@ -25,11 +25,13 @@ const ListItem = ({
           <input
             type="checkbox"
             onChange={() => {
-              setIdsSelected([...idsSlected, todo.id]);
+              setIdsSelected([...idsSelected, todo.id]);
             }}
             className="bg-gradient-checkbox w-3 mr-4 border border-black rounded-full"
           />
-          <span className="pb-0.5">{todo.title}</span>
+          <span className={`${isDone && "line-through text-gray-400"} pb-0.5`}>
+            {todo.title}
+          </span>
         </div>
         <div className="w-28 ml-4 text-left">
           <span

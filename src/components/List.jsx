@@ -6,12 +6,12 @@ const List = ({
   handleDelete,
   setShowModal,
   setTodoEdit,
-  idsSlected,
+  idsSelected,
   setIdsSelected,
 }) => {
   return (
     <ul className="rounded-md">
-      {todosCurrent.map((todo) => (
+      {todosCurrent?.map((todo) => (
         <ListItem
           key={todo.id}
           todo={todo}
@@ -19,7 +19,7 @@ const List = ({
           handleDelete={handleDelete}
           setShowModal={setShowModal}
           setTodoEdit={setTodoEdit}
-          idsSlected={idsSlected}
+          idsSelected={idsSelected}
           setIdsSelected={setIdsSelected}
         />
       ))}
