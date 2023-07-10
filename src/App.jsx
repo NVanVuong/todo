@@ -21,11 +21,31 @@ function App() {
   const [title, setTitle] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [idsSelected, setIdsSelected] = useState([]);
-  const [addTodoMutation] = useAddTodoMutation();
-  const [updateTodoMutation] = useUpdateTodoMutation();
-  const [deleteTodoMutation] = useDeleteTodoMutation();
+  // const [addTodoMutation, { isLoading }] = useAddTodoMutation();
+  // const [updateTodoMutation, { isLoading }] = useUpdateTodoMutation();
+  // const [deleteTodoMutation, , { isLoading }] = useDeleteTodoMutation();
 
-  const { data: todos, isLoading, refetch } = useGetTodosQuery();
+  // const { data: todos, isLoading, refetch } = useGetTodosQuery();
+
+  const [addTodoMutation, { isLoading: isAddTodoLoading }] =
+    useAddTodoMutation();
+  const [updateTodoMutation, { isLoading: isUpdateTodoLoading }] =
+    useUpdateTodoMutation();
+  const [deleteTodoMutation, { isLoading: isDeleteTodoLoading }] =
+    useDeleteTodoMutation();
+
+  const {
+    data: todos,
+    isLoading: isGetTodosLoading,
+    refetch,
+  } = useGetTodosQuery();
+
+  const isLoading =
+    isAddTodoLoading ||
+    isUpdateTodoLoading ||
+    isDeleteTodoLoading ||
+    isGetTodosLoading;
+
   useEffect(() => {
     if (todos) {
       setTodosCurrent(todos);
@@ -89,28 +109,29 @@ function App() {
           <div className="w-full mt-16">
             <Header />
             <Input title={title} setTitle={setTitle} handleAdd={handleAdd} />
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <>
-                <List
-                  todosCurrent={todosCurrent}
-                  setTodosCurrent={setTodosCurrent}
-                  handleDelete={handleDelete}
-                  setShowModal={setShowModal}
-                  setTodoEdit={setTodoEdit}
-                  idsSelected={idsSelected}
-                  setIdsSelected={setIdsSelected}
-                />
-                <Footer
-                  viewCurrent={viewCurrent}
-                  todosCurrent={todosCurrent}
-                  setViewCurrent={setViewCurrent}
-                  idsSelected={idsSelected}
-                  handleClearSelection={handleClearSelection}
-                />
-              </>
-            )}
+            <div className="relative mt-8">
+              <Loading isLoading={isLoading} />
+              {!isGetTodosLoading ? (
+                <>
+                  <List
+                    todosCurrent={todosCurrent}
+                    setTodosCurrent={setTodosCurrent}
+                    handleDelete={handleDelete}
+                    setShowModal={setShowModal}
+                    setTodoEdit={setTodoEdit}
+                    idsSelected={idsSelected}
+                    setIdsSelected={setIdsSelected}
+                  />
+                  <Footer
+                    viewCurrent={viewCurrent}
+                    todosCurrent={todosCurrent}
+                    setViewCurrent={setViewCurrent}
+                    idsSelected={idsSelected}
+                    handleClearSelection={handleClearSelection}
+                  />
+                </>
+              ) : null}
+            </div>
             <Modal
               todo={todoEdit}
               handleUpdate={handleUpdate}
