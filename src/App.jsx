@@ -77,6 +77,7 @@ function App() {
     for (const id of idsSelected) {
       await deleteTodoMutation(id);
     }
+    setIdsSelected([]);
     refetch();
   };
 
