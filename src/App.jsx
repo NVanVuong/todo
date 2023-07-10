@@ -6,80 +6,63 @@ import List from "./components/List";
 import { v4 as uuidv4 } from "uuid";
 import Footer from "./components/Footer";
 import Modal from "./components/Modal";
-import { useGetTodosQuery } from "./api";
+import { useGetTodosQuery } from "./service/api";
 import {
   useAddTodoMutation,
   useUpdateTodoMutation,
   useDeleteTodoMutation,
-} from "./api";
+} from "./service/api";
+import { Loading } from "./components/Loading";
 
 function App() {
-  const { data: todos } = useGetTodosQuery();
   const [todosCurrent, setTodosCurrent] = useState([]);
   const [todoEdit, setTodoEdit] = useState(null);
   const [viewCurrent, setViewCurrent] = useState("All");
   const [title, setTitle] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [idsSelected, setIdsSelected] = useState([]);
+  const [addTodoMutation] = useAddTodoMutation();
+  const [updateTodoMutation] = useUpdateTodoMutation();
+  const [deleteTodoMutation] = useDeleteTodoMutation();
 
+  const { data: todos, isLoading, refetch } = useGetTodosQuery();
   useEffect(() => {
     if (todos) {
       setTodosCurrent(todos);
     }
   }, [todos]);
 
-  // const handleAdd = () => {
-  //   if (title.trim() !== "") {
-  //     dispatch(
-  //       todosAdd({
-  //         id: uuidv4(),
-  //         title: title,
-  //         status: "Pending",
-  //       })
-  //     );
-  //   }
-  //   setTitle("");
-  // };
-
-  const addTodoMutation = useAddTodoMutation();
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (title.trim() !== "") {
-      addTodoMutation.mutate({
+      await addTodoMutation({
         id: uuidv4(),
         title: title,
         status: "Pending",
       });
     }
     setTitle("");
+    refetch();
   };
 
-  // const handleUpdate = (newTodo) => {
-  //   dispatch(
-  //     todosUpdate({
-  //       id: newTodo.id,
-  //       title: newTodo.title,
-  //       status: newTodo.status,
-  //     })
-  //   );
-  // };
-
-  const updateTodoMutation = useUpdateTodoMutation();
-
-  const handleUpdate = (newTodo) => {
-    updateTodoMutation.mutate({
+  const handleUpdate = async (newTodo) => {
+    await updateTodoMutation({
       id: newTodo.id,
       title: newTodo.title,
       status: newTodo.status,
     });
+    refetch();
   };
 
-  // const handleDelete = (todoId) => {
-  //   dispatch(todosDelete(todoId));
-  // };
+  const handleDelete = async (todoId) => {
+    await deleteTodoMutation(todoId);
+    refetch();
+  };
 
-  const deleteTodoMutation = useDeleteTodoMutation();
-  const handleDelete = (todoId) => {
-    deleteTodoMutation.mutate(todoId);
+  const handleClearSelection = async (idsSelected) => {
+    for (const id of idsSelected) {
+      await deleteTodoMutation(id);
+    }
+    refetch();
   };
 
   useEffect(() => {
@@ -106,20 +89,28 @@ function App() {
           <div className="w-full mt-16">
             <Header />
             <Input title={title} setTitle={setTitle} handleAdd={handleAdd} />
-            <List
-              todosCurrent={todosCurrent}
-              setTodosCurrent={setTodosCurrent}
-              handleDelete={handleDelete}
-              setShowModal={setShowModal}
-              setTodoEdit={setTodoEdit}
-              idsSlected={idsSelected}
-              setIdsSelected={setIdsSelected}
-            />
-            <Footer
-              viewCurrent={viewCurrent}
-              todosCurrent={todosCurrent}
-              setViewCurrent={setViewCurrent}
-            />
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <>
+                <List
+                  todosCurrent={todosCurrent}
+                  setTodosCurrent={setTodosCurrent}
+                  handleDelete={handleDelete}
+                  setShowModal={setShowModal}
+                  setTodoEdit={setTodoEdit}
+                  idsSelected={idsSelected}
+                  setIdsSelected={setIdsSelected}
+                />
+                <Footer
+                  viewCurrent={viewCurrent}
+                  todosCurrent={todosCurrent}
+                  setViewCurrent={setViewCurrent}
+                  idsSelected={idsSelected}
+                  handleClearSelection={handleClearSelection}
+                />
+              </>
+            )}
             <Modal
               todo={todoEdit}
               handleUpdate={handleUpdate}

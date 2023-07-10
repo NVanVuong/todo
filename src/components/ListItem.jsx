@@ -7,7 +7,7 @@ const ListItem = ({
   handleDelete,
   setShowModal,
   setTodoEdit,
-  idsSlected,
+  idsSelected,
   setIdsSelected,
 }) => {
   const handleEditClick = (todo) => {
@@ -25,7 +25,7 @@ const ListItem = ({
           <input
             type="checkbox"
             onChange={() => {
-              setIdsSelected([...idsSlected, todo.id]);
+              setIdsSelected([...idsSelected, todo.id]);
             }}
             className="bg-gradient-checkbox w-3 mr-4 border border-black rounded-full"
           />

@@ -6,7 +6,7 @@ const List = ({
   handleDelete,
   setShowModal,
   setTodoEdit,
-  idsSlected,
+  idsSelected,
   setIdsSelected,
 }) => {
   return (
@@ -19,7 +19,7 @@ const List = ({
           handleDelete={handleDelete}
           setShowModal={setShowModal}
           setTodoEdit={setTodoEdit}
-          idsSlected={idsSlected}
+          idsSelected={idsSelected}
           setIdsSelected={setIdsSelected}
         />
       ))}
