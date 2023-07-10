@@ -98,14 +98,14 @@ const Modal = ({ todo, handleUpdate, showModal, setShowModal }) => {
                   </select>
                   <div className="mt-6 flex items-center justify-end rounded-b">
                     <button
-                      className="background-transparent rounded-sm px-6 py-3 text-sm font-bold uppercase text-red-500 outline-none transition-all duration-200 ease-linear"
+                      className="background-transparent rounded-sm px-6 py-3 text-sm font-bold uppercase text-red-500 hover:ring-4 hover:ring-red-200 outline-none transition-all duration-200 ease-linear"
                       type="button"
                       onClick={handleClickClose}
                     >
                       Close
                     </button>
                     <button
-                      className={`ml-2 rounded-sm bg-blue-main px-6 py-3 text-sm font-bold uppercase text-green-600 shadow outline-none transition-all duration-200 ease-linea`}
+                      className={`ml-2 rounded-sm bg-blue-main px-6 py-3 text-sm font-bold uppercase text-blue-600 hover:ring-4 hover:ring-blue-200 shadow outline-none transition-all duration-200 ease-linea`}
                       type="submit"
                     >
                       Save
