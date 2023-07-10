@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { done, inProgress, pending } from "../constants";
 
 const Modal = ({ todo, handleUpdate, showModal, setShowModal }) => {
   const [title, setTitle] = useState("");
@@ -10,9 +11,9 @@ const Modal = ({ todo, handleUpdate, showModal, setShowModal }) => {
   }, [todo]);
 
   const statusOptions = [
-    { value: "Pending", label: "Pending" },
-    { value: "In progress", label: "In Progress" },
-    { value: "Done", label: "Done" },
+    { value: pending, label: pending },
+    { value: inProgress, label: inProgress },
+    { value: done, label: done },
   ];
 
   const handleClickOut = (event) => {
