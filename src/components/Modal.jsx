@@ -105,7 +105,7 @@ const Modal = ({ todo, handleUpdate, showModal, setShowModal }) => {
                       Close
                     </button>
                     <button
-                      className={`ml-2 rounded-sm bg-blue-main px-6 py-3 text-sm font-bold uppercase text-blue-600 hover:ring-4 hover:ring-blue-200 shadow outline-none transition-all duration-200 ease-linea`}
+                      className={`ml-2 rounded-sm bg-blue-main px-6 py-3 text-sm font-bold uppercase text-indigo-500 hover:ring-4 hover:ring-indigo-300 shadow outline-none transition-all duration-200 ease-linea`}
                       type="submit"
                     >
                       Save
