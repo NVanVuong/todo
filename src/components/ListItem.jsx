@@ -7,12 +7,21 @@ const ListItem = ({
   handleDelete,
   setShowModal,
   setTodoEdit,
-  idsSelected,
   setIdsSelected,
 }) => {
   const handleEditClick = (todo) => {
     setShowModal(true);
     setTodoEdit(todo);
+  };
+
+  const handleCheckboxChange = (e) => {
+    if (e.target.checked) {
+      setIdsSelected((prevIdsSelected) => [...prevIdsSelected, todo.id]);
+    } else {
+      setIdsSelected((prevIdsSelected) =>
+        prevIdsSelected.filter((id) => id !== todo.id)
+      );
+    }
   };
 
   const isPending = todo.status === "Pending";
@@ -24,9 +33,7 @@ const ListItem = ({
         <div className="flex flex-1">
           <input
             type="checkbox"
-            onChange={() => {
-              setIdsSelected([...idsSelected, todo.id]);
-            }}
+            onChange={handleCheckboxChange}
             className="bg-gradient-checkbox w-3 mr-4 border border-black rounded-full"
           />
           <span className={`${isDone && "line-through text-gray-400"} pb-0.5`}>

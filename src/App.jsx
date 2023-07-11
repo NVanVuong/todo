@@ -70,10 +70,12 @@ function App() {
 
   const handleDelete = async (todoId) => {
     await deleteTodoMutation(todoId);
+    setIdsSelected(idsSelected.filter((id) => id !== todoId));
     refetch();
   };
 
   const handleClearSelection = async (idsSelected) => {
+    console.log(idsSelected);
     for (const id of idsSelected) {
       await deleteTodoMutation(id);
     }
